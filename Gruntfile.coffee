@@ -11,6 +11,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-jade"
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-contrib-stylus"
+  grunt.loadNpmTasks "grunt-contrib-cssmin"
 
   #above here the working directory is the grunt directory
   gruntdir = process.cwd()
@@ -25,7 +26,7 @@ module.exports = (grunt) ->
     #watcher
     watch:
       options:
-        nospawn: true
+        gruntCwd: gruntdir
       scripts:
         files: 'src/scripts/**/*.coffee'
         tasks: 'scripts'
@@ -80,11 +81,19 @@ module.exports = (grunt) ->
           compress: not dev
           linenos: dev
           'include css': true
-          paths: ["src/styles/"]
+          paths: ["src/styles/","../"]
+    cssmin:
+      compress:
+        files:
+          "css/app.css": "css/app.css"
+
+  grunt.event.on 'watch', (action, filepath) ->
+    grunt.log.writeln(filepath + ' has ' + action);
+
 
   #task groups
   grunt.registerTask "scripts", ["coffee"].concat(if dev then [] else ["uglify"])
-  grunt.registerTask "styles",  ["stylus"]
+  grunt.registerTask "styles",  ["stylus"].concat(if dev then [] else ["cssmin"])
   grunt.registerTask "views",   ["jade"]
   grunt.registerTask "build",   ["scripts","styles","views"]
   grunt.registerTask "default", ["build","watch"]
