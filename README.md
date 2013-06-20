@@ -12,7 +12,7 @@ A GruntSource project to build Github Pages websites
   npm install -g grunt-source
   ```
 
-* Create a `GruntSource.json` in the root of your `gh-pages` branch
+* Create a `Gruntsource.json` in the root of your `gh-pages` branch
 
   ``` shell
   {
@@ -26,7 +26,7 @@ A GruntSource project to build Github Pages websites
 * Create the following directory structure:
 
   ```
-  GruntSource.json
+  Gruntsource.json
   src/
       scripts/index.coffee
       styles/index.styl
@@ -42,7 +42,7 @@ A GruntSource project to build Github Pages websites
 * Poof:
 
   ```
-  GruntSource.json
+  Gruntsource.json
   js/app.js
   css/app.css
   index.html

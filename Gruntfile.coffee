@@ -8,6 +8,7 @@ module.exports = (grunt) ->
   #load external tasks
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-uglify"
+  grunt.loadNpmTasks "grunt-contrib-concat"
   grunt.loadNpmTasks "grunt-contrib-jade"
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-contrib-stylus"
@@ -20,7 +21,7 @@ module.exports = (grunt) ->
   grunt.file.setBase base
   #below here the working directory is the project directory
 
-  source = grunt.file.readJSON "./GruntSource.json"
+  source = grunt.file.readJSON "./Gruntsource.json"
 
   grunt.initConfig
     #watcher
@@ -37,7 +38,7 @@ module.exports = (grunt) ->
         files: 'src/styles/**/*.styl'
         tasks: 'styles'
       config:
-        files: ['GruntSource.json', "#{gruntdir}/Gruntfile.coffee"]
+        files: ['Gruntsource.json', "#{gruntdir}/Gruntfile.coffee"]
         tasks: 'default'
 
     #tasks
@@ -55,6 +56,10 @@ module.exports = (grunt) ->
         options:
           bare: false
           join: true
+    concat:
+      scripts:
+        files:
+          "js/app.js": ["src/scripts/vendor/*.js", "js/app.js"]
     uglify:
       compress:
         files:
@@ -88,11 +93,11 @@ module.exports = (grunt) ->
           "css/app.css": "css/app.css"
 
   grunt.event.on 'watch', (action, filepath) ->
-    grunt.log.writeln(filepath + ' has ' + action);
+    grunt.log.writeln filepath + ' has ' + action
 
 
   #task groups
-  grunt.registerTask "scripts", ["coffee"].concat(if dev then [] else ["uglify"])
+  grunt.registerTask "scripts", ["coffee","concat:scripts"].concat(if dev then [] else ["uglify"])
   grunt.registerTask "styles",  ["stylus"].concat(if dev then [] else ["cssmin"])
   grunt.registerTask "views",   ["jade"]
   grunt.registerTask "build",   ["scripts","styles","views"]
