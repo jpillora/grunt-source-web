@@ -6,7 +6,7 @@ module.exports = (grunt) ->
   dev = env is "dev"
 
   #load external tasks
-  grunt.loadNpmTasks "grunt-contrib-watch"
+  grunt.loadNpmTasks "grunt-jpillora-watch" #awaiting PR
   grunt.loadNpmTasks "grunt-contrib-uglify"
   grunt.loadNpmTasks "grunt-contrib-concat"
   grunt.loadNpmTasks "grunt-contrib-jade"
