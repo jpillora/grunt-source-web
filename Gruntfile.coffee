@@ -103,7 +103,7 @@ module.exports = (grunt) ->
 
   #task groups
   grunt.registerTask "scripts", ["coffee","concat:scripts"].
-                                  concat(if source.angular then ["ngmin"] else []).
+                                  concat(if not dev and source.angular then ["ngmin"] else []).
                                   concat(if dev then [] else ["uglify"])
   grunt.registerTask "styles",  ["stylus"].concat(if dev then [] else ["cssmin"])
   grunt.registerTask "views",   ["jade"]
