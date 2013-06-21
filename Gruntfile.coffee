@@ -13,6 +13,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-contrib-stylus"
   grunt.loadNpmTasks "grunt-contrib-cssmin"
+  grunt.loadNpmTasks "grunt-ngmin"
 
   #above here the working directory is the grunt directory
   gruntdir = process.cwd()
@@ -60,6 +61,10 @@ module.exports = (grunt) ->
       scripts:
         files:
           "js/app.js": ["src/scripts/vendor/*.js", "js/app.js"]
+    ngmin:
+      app:
+        files:
+          "js/app.js": "js/app.js"
     uglify:
       compress:
         files:
@@ -86,7 +91,7 @@ module.exports = (grunt) ->
           compress: not dev
           linenos: dev
           'include css': true
-          paths: ["src/styles/","../"]
+          paths: ["src/styles/embed/","../"]
     cssmin:
       compress:
         files:
@@ -97,7 +102,9 @@ module.exports = (grunt) ->
 
 
   #task groups
-  grunt.registerTask "scripts", ["coffee","concat:scripts"].concat(if dev then [] else ["uglify"])
+  grunt.registerTask "scripts", ["coffee","concat:scripts"].
+                                  concat(if source.angular then ["ngmin"] else []).
+                                  concat(if dev then [] else ["uglify"])
   grunt.registerTask "styles",  ["stylus"].concat(if dev then [] else ["cssmin"])
   grunt.registerTask "views",   ["jade"]
   grunt.registerTask "build",   ["scripts","styles","views"]
