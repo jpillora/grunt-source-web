@@ -9,14 +9,14 @@ A GruntSource project to build Github Pages websites
 * Install Grunt Source
 
   ``` shell
-  npm install -g grunt-source
+  npm install -g grunt-source grunt-cli
   ```
 
-* Create a `Gruntsource.json` in the root of your `gh-pages` branch
+* Create a `Gruntsource.json` in your project's root
 
   ``` shell
   {
-      "source": "~/Code/JavaScript/grunt-source-ghpages",
+      "source": "~/./grunt-sources/ghpages",
       "repo": "https://github.com/jpillora/grunt-source-ghpages.git"
   }
   ```
@@ -53,10 +53,11 @@ A GruntSource project to build Github Pages websites
 
 The default task will:
 
+* Development and Production builds with `--env dev|prod`
 * Compile your CoffeeScript, Jade and Stylus
 * Watch source each directory and compile only what is required
 
-The current setup will create 1 JS, 1 CSS, 1 HTML in an effort to reduce the asset count. You can use any number of `.coffee` files as they will all be joined and wrapped in an IEFF, you can use more `.styl` files by using the built-in `include` syntax, and similarly, you can use the built-in `include` to split out your HTML into a logical file structure of `.jade` files. See the [verify.com repo](https://github.com/jpillora/verifyjs-com) for an example of this.
+The current setup will create 1 JS, 1 CSS, 1 HTML in an effort to reduce the asset count. You can use any number of `.coffee` files as they will all be joined and wrapped in an IEFF, you can use more `.styl` files by using the built-in `include` syntax, and similarly, you can use the built-in `include` to split out your HTML into a logical file structure of `.jade` files. See the [verifyjs.com repo](https://github.com/jpillora/verifyjs-com) for an example of this.
 
 ## Customising
 
