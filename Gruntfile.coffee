@@ -32,6 +32,9 @@ module.exports = (grunt) ->
       scripts:
         files: 'src/scripts/**/*.coffee'
         tasks: 'scripts'
+      vendorScripts:
+        files: 'src/scripts/vendor/**/*.js'
+        tasks: 'scripts'
       views:
         files: 'src/views/**/*.jade'
         tasks: 'views'
