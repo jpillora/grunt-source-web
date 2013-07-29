@@ -89,6 +89,7 @@ module.exports = (grunt) ->
               fs.readFileSync(path.join base, file).toString()
             source: source
             env: env
+            min: if env is 'prod' then '.min' else ''
             dev: dev
             date: new Date()
             manifest: "<%= manifest.generate.dest %>"
