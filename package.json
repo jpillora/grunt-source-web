@@ -16,6 +16,8 @@
     "grunt-contrib-cssmin": "~0.6.1",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-jpillora-watch": "~0.4.4patch1",
-    "grunt-ngmin": "0.0.2"
+    "grunt-ngmin": "0.0.2",
+    "grunt-manifest": "~0.4.0",
+    "mkdirp": "~0.3.5"
   }
 }

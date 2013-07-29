@@ -1,3 +1,6 @@
+fs = require "fs"
+path = require "path"
+
 module.exports = (grunt) ->
 
   #resolve options
@@ -14,6 +17,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-stylus"
   grunt.loadNpmTasks "grunt-contrib-cssmin"
   grunt.loadNpmTasks "grunt-ngmin"
+  grunt.loadNpmTasks "grunt-manifest"
+  grunt.loadTasks "./tasks"
 
   #above here the working directory is the grunt directory
   gruntdir = process.cwd()
@@ -32,9 +37,9 @@ module.exports = (grunt) ->
       scripts:
         files: 'src/scripts/**/*.coffee'
         tasks: 'scripts'
-      vendorScripts:
+      vendor:
         files: 'src/scripts/vendor/**/*.js'
-        tasks: 'scripts'
+        tasks: 'scripts-pack'
       views:
         files: 'src/views/**/*.jade'
         tasks: 'views'
@@ -79,10 +84,14 @@ module.exports = (grunt) ->
         options:
           pretty: dev
           data:
+            JSON: JSON
+            showFile: (file) ->
+              fs.readFileSync(path.join base, file).toString()
             source: source
             env: env
             dev: dev
             date: new Date()
+            manifest: "<%= manifest.generate.dest %>"
     stylus:
       compile:
         files:
@@ -100,14 +109,33 @@ module.exports = (grunt) ->
         files:
           "css/app.css": "css/app.css"
 
+    #appcache
+    manifest:
+      generate:
+        options:
+          # basePath: '../',
+          network: ['*']
+          # fallback: ['/ /offline.html'],
+          preferOnline: true
+          verbose: false
+          timestamp: true
+        src: [
+          'css/img/**/*.*'
+          'css/app.css'
+          'js/app.js'
+        ]
+        dest: 'appcache'
+
   grunt.event.on 'watch', (action, filepath) ->
     grunt.log.writeln filepath + ' has ' + action
 
 
   #task groups
-  grunt.registerTask "scripts", ["coffee","concat:scripts"].
+  grunt.registerTask "scripts-compile",      ["coffee"]
+  grunt.registerTask "scripts-pack", ["concat:scripts"].
                                   concat(if not dev and source.angular then ["ngmin"] else []).
                                   concat(if dev then [] else ["uglify"])
+  grunt.registerTask "scripts", ["scripts-compile","scripts-pack"]
   grunt.registerTask "styles",  ["stylus"].concat(if dev then [] else ["cssmin"])
   grunt.registerTask "views",   ["jade"]
   grunt.registerTask "build",   ["scripts","styles","views"]
