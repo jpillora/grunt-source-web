@@ -1,69 +1,39 @@
 grunt-source-ghpages
 ====================
 
-A GruntSource project to build Github Pages websites
+A GruntSource project to build static websites.
 
 ## Usage
 
 * Install Grunt Source
 
-``` shell
-npm install -g grunt-source
-```
+	http://github.com/jpillora/grunt-source
+  
+* When we run:
 
-* Create a `Gruntsource.json` in your project's root
+  ``` sh
+  grunt-source
+  ```
 
-``` json
-{
-  "source": "~/.grunt-sources/ghpages",
-  "repo": "https://github.com/jpillora/grunt-source-ghpages.git"
-}
-```
-*Note: You can change the "source" path*
+* It will create the following directory structure:
 
-* Run the `init` task with
+  ``` sh
+  src/
+    scripts/index.coffee
+    styles/index.styl
+    views/index.jade
+  ```
 
-``` shell
-grunt-source init
-```
-*Note: the `init` task - registered by Grunt Source - copies the **missing** files from "source"/init into the current directory*
 
-* For [gh-pages](https://github.com/jpillora/grunt-source-ghpages/tree/master/init), it will create the following directory structure:
+* And compile these files to:
 
-``` shell
-src/
-  scripts/index.coffee
-  styles/index.styl
-  views/index.jade
-```
-
-* Then run:
-
-``` shell
-grunt-source
-```
-
-* Poof:
-
-``` shell
-js/app.js
-css/app.css
-index.html
-```
+  ``` sh
+  js/app.js
+  css/app.css
+  index.html
+  ```
 
 * And we're ready to host on Github Pages
-
-## Making your own sources
-
-Create a Grunt project, in your `Gruntfile.js`, add this line at the top:
-
-``` javascript
-grunt.source.loadAllTasks()
-```
-
-### `loadAllTasks()`
-
-This function is important, first it loads all of the tasks (npm tasks and local tasks) in the "source" directory (or the Grunt project directory), then it changes the working directory *back* to the current directory and loads all local tasks there. 
 
 ## Features
 
