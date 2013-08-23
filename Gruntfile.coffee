@@ -8,32 +8,17 @@ module.exports = (grunt) ->
   env = "dev" unless env in ["dev","prod"]
   dev = env is "dev"
 
-  #load external tasks
-  grunt.loadNpmTasks "grunt-jpillora-watch" #awaiting PR
-  grunt.loadNpmTasks "grunt-contrib-uglify"
-  grunt.loadNpmTasks "grunt-contrib-concat"
-  grunt.loadNpmTasks "grunt-contrib-jade"
-  grunt.loadNpmTasks "grunt-contrib-coffee"
-  grunt.loadNpmTasks "grunt-contrib-stylus"
-  grunt.loadNpmTasks "grunt-contrib-cssmin"
-  grunt.loadNpmTasks "grunt-ngmin"
-  grunt.loadNpmTasks "grunt-manifest"
-  grunt.loadTasks "./tasks"
+  #load external tasks and change working directory
+  grunt.source.loadAllTasks()
 
-  #above here the working directory is the grunt directory
-  gruntdir = process.cwd()
-  base = grunt.option "basedir"
-  throw "Missing 'basedir' option" unless base
-  grunt.file.setBase base
-  #below here the working directory is the project directory
+  #load project specific custom tasks
+  grunt.loadTasks "./tasks" if grunt.file.isDir "./tasks"
 
   source = grunt.file.readJSON "./Gruntsource.json"
 
   grunt.initConfig
     #watcher
     watch:
-      options:
-        gruntCwd: gruntdir
       scripts:
         files: 'src/scripts/**/*.coffee'
         tasks: 'scripts'
@@ -47,7 +32,7 @@ module.exports = (grunt) ->
         files: 'src/styles/**/*.styl'
         tasks: 'styles'
       config:
-        files: ['Gruntsource.json', "#{gruntdir}/Gruntfile.coffee"]
+        files: ['Gruntsource.json']
         tasks: 'default'
 
     #tasks
@@ -126,10 +111,6 @@ module.exports = (grunt) ->
           'js/app.js'
         ]
         dest: 'appcache'
-
-  grunt.event.on 'watch', (action, filepath) ->
-    grunt.log.writeln filepath + ' has ' + action
-
 
   #task groups
   grunt.registerTask "scripts-compile",      ["coffee"]
