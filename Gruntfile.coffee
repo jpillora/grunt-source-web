@@ -3,19 +3,15 @@ path = require "path"
 
 module.exports = (grunt) ->
 
-  #resolve options
+  #load external tasks and change working directory
+  grunt.source.loadAllTasks()
+
+  #check options
   env = grunt.option "env"
   env = "dev" unless env in ["dev","prod"]
   dev = env is "dev"
 
-  #load external tasks and change working directory
-  grunt.source.loadAllTasks()
-
-  #load project specific custom tasks
-  grunt.loadTasks "./tasks" if grunt.file.isDir "./tasks"
-
-  source = grunt.file.readJSON "./Gruntsource.json"
-
+  #initialise config
   grunt.initConfig
     #watcher
     watch:
@@ -71,8 +67,8 @@ module.exports = (grunt) ->
           data:
             JSON: JSON
             showFile: (file) ->
-              fs.readFileSync(path.join base, file).toString()
-            source: source
+              grunt.read.file path.join base, file
+            source: grunt.source
             env: env
             min: if env is 'prod' then '.min' else ''
             dev: dev
@@ -85,7 +81,7 @@ module.exports = (grunt) ->
         options:
           urlfunc: 'embedurl'
           define:
-            source: source
+            source: grunt.source
           compress: not dev
           linenos: dev
           'include css': true
@@ -115,7 +111,7 @@ module.exports = (grunt) ->
   #task groups
   grunt.registerTask "scripts-compile",      ["coffee"]
   grunt.registerTask "scripts-pack", ["concat:scripts"].
-                                  concat(if not dev and source.angular then ["ngmin"] else []).
+                                  concat(if not dev and grunt.source.angular then ["ngmin"] else []).
                                   concat(if dev then [] else ["uglify"])
   grunt.registerTask "scripts", ["scripts-compile","scripts-pack"]
   grunt.registerTask "styles",  ["stylus"].concat(if dev then [] else ["cssmin"])
