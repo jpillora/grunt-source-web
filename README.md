@@ -1,7 +1,7 @@
-grunt-source-ghpages
+grunt-source-web
 ====================
 
-A premade Grunt environment to build static websites,
+A premade Grunt environment to build optimized static websites,
 utilizing [Grunt Source](https://github.com/jpillora/grunt-source).
 
 ## Features
@@ -136,7 +136,7 @@ See this projects Gruntfile.coffee for more information.
 
 ## Customising
 
-1. Fork [this repo](https://github.com/jpillora/grunt-source-ghpages)
+1. Fork [this repo](https://github.com/jpillora/grunt-source-web)
 2. Edit your `GruntSource.json` file's `repo` to be the new Git URL
 3. Edit your `GruntSource.json` file's `source` to reference a new directory
 4. Rerun `grunt-source`

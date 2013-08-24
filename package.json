@@ -1,9 +1,9 @@
 {
-  "name": "grunt-source-ghpages",
-  "version": "0.3.0",
+  "name": "grunt-source-web",
+  "version": "0.4.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jpillora/grunt-source-ghpages"
+    "url": "https://github.com/jpillora/grunt-source-web"
   },
   "author": "Jaime Pillora <dev@jpillora.com>",
   "license": "MIT",
