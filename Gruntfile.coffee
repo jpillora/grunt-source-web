@@ -6,6 +6,16 @@ module.exports = (grunt) ->
   #load external tasks and change working directory
   grunt.source.loadAllTasks()
 
+  #output files
+  output = grunt.source.output or {}
+  grunt.util._.defaults output,
+    js: "js/app.js"
+    css: "css/app.css"
+    html: "index.html"
+
+
+  console.log output
+
   #check options
   env = grunt.option "env"
   env = "dev" unless env in ["dev","prod"]
@@ -34,34 +44,33 @@ module.exports = (grunt) ->
     #tasks
     coffee:
       compile:
-        files:
-          #init then all then run
-          "js/app.js": [
-            "src/scripts/init.coffee",
-            "src/scripts/**/*.coffee",
-            #remove and re-add to insert at bottom
-            "!src/scripts/run.coffee",
-            "src/scripts/run.coffee"
-          ]
+        src: [
+          "src/scripts/init.coffee",
+          "src/scripts/**/*.coffee",
+          #remove and re-add to insert at bottom
+          "!src/scripts/run.coffee",
+          "src/scripts/run.coffee"
+        ]
+        dest: output.js
         options:
           bare: false
           join: true
     concat:
       scripts:
-        files:
-          "js/app.js": ["src/scripts/vendor/*.js", "js/app.js"]
+        src: ["src/scripts/vendor/*.js", output.js]
+        dest: output.js
     ngmin:
       app:
-        files:
-          "js/app.js": "js/app.js"
+        src: output.js
+        dest: output.js
     uglify:
       compress:
-        files:
-          "js/app.js": "js/app.js"
+        src: output.js
+        dest: output.js
     jade:
       compile:
-        files:
-          "index.html": "src/views/index.jade"
+        src: "src/views/index.jade"
+        dest: output.html
         options:
           pretty: dev
           data:
@@ -74,10 +83,12 @@ module.exports = (grunt) ->
             dev: dev
             date: new Date()
             manifest: "<%= manifest.generate.dest %>"
+            css: "<style>\n#{grunt.read.file(output.css)}\n</style>"
+            js: "<script>\n#{grunt.read.file(output.js)}\n</script>"
     stylus:
       compile:
-        files:
-          "css/app.css": "src/styles/app.styl"
+        src: "src/styles/app.styl"
+        dest: output.css
         options:
           urlfunc: 'embedurl'
           define:
@@ -88,8 +99,8 @@ module.exports = (grunt) ->
           paths: ["src/styles/embed/","../"]
     cssmin:
       compress:
-        files:
-          "css/app.css": "css/app.css"
+        src: output.csss
+        dest: output.cs
 
     #appcache
     manifest:
@@ -103,8 +114,8 @@ module.exports = (grunt) ->
           timestamp: true
         src: [
           'css/img/**/*.*'
-          'css/app.css'
-          'js/app.js'
+          output.
+          output.js
         ]
         dest: 'appcache'
 
