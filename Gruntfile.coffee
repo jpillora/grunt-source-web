@@ -13,9 +13,6 @@ module.exports = (grunt) ->
     css: "css/app.css"
     html: "index.html"
 
-
-  console.log output
-
   #check options
   env = grunt.option "env"
   env = "dev" unless env in ["dev","prod"]
@@ -76,15 +73,15 @@ module.exports = (grunt) ->
           data:
             JSON: JSON
             showFile: (file) ->
-              grunt.read.file path.join base, file
+              grunt.file.read path.join base, file
             source: grunt.source
             env: env
             min: if env is 'prod' then '.min' else ''
             dev: dev
             date: new Date()
             manifest: "<%= manifest.generate.dest %>"
-            css: "<style>\n#{grunt.read.file(output.css)}\n</style>"
-            js: "<script>\n#{grunt.read.file(output.js)}\n</script>"
+            css: "<style>#{grunt.file.read(output.css)}</style>"
+            js: "<script>#{grunt.file.read(output.js)}</script>"
     stylus:
       compile:
         src: "src/styles/app.styl"
@@ -99,8 +96,8 @@ module.exports = (grunt) ->
           paths: ["src/styles/embed/","../"]
     cssmin:
       compress:
-        src: output.csss
-        dest: output.cs
+        src: output.css
+        dest: output.css
 
     #appcache
     manifest:
@@ -114,7 +111,7 @@ module.exports = (grunt) ->
           timestamp: true
         src: [
           'css/img/**/*.*'
-          output.
+          output.css
           output.js
         ]
         dest: 'appcache'
