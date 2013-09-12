@@ -6,6 +6,11 @@ module.exports = (grunt) ->
   #load external tasks and change working directory
   grunt.source.loadAllTasks()
 
+  gracefulRead = (path) ->
+    try
+      return grunt.file.read path
+    return ""
+
   #output files
   output = grunt.source.output or {}
   grunt.util._.defaults output,
@@ -72,16 +77,15 @@ module.exports = (grunt) ->
           pretty: dev
           data:
             JSON: JSON
-            showFile: (file) ->
-              grunt.file.read path.join base, file
+            showFile: gracefulRead
             source: grunt.source
             env: env
             min: if env is 'prod' then '.min' else ''
             dev: dev
             date: new Date()
             manifest: "<%= manifest.generate.dest %>"
-            css: "<style>#{grunt.file.read(output.css)}</style>"
-            js: "<script>#{grunt.file.read(output.js)}</script>"
+            css: "<style>#{gracefulRead(output.css)}</style>"
+            js: "<script>#{gracefulRead(output.js)}</script>"
     stylus:
       compile:
         src: "src/styles/app.styl"
