@@ -25,8 +25,11 @@ module.exports = (grunt) ->
 
   #initialise config
   grunt.initConfig
+
     #watcher
     watch:
+      options:
+        livereload: true
       scripts:
         files: 'src/scripts/**/*.coffee'
         tasks: 'scripts'
@@ -84,8 +87,8 @@ module.exports = (grunt) ->
             dev: dev
             date: new Date()
             manifest: "<%= manifest.generate.dest %>"
-            css: "<style>#{gracefulRead(output.css)}</style>"
-            js: "<script>#{gracefulRead(output.js)}</script>"
+            css: -> "<style>#{gracefulRead(output.css)}</style>"
+            js: -> "<script>#{gracefulRead(output.js)}</script>"
     stylus:
       compile:
         src: "src/styles/app.styl"
@@ -119,6 +122,18 @@ module.exports = (grunt) ->
           output.js
         ]
         dest: 'appcache'
+
+  #external aws credentials
+  try
+    aws = grunt.file.readJSON "./aws.json"
+    throw "Missing 'accessKeyId'" unless aws.accessKeyId
+    grunt.config 's3.options.accessKeyId', aws.accessKeyId
+    throw "Missing 'secretAccessKey'" unless aws.secretAccessKey
+    grunt.config 's3.options.secretAccessKey', aws.secretAccessKey
+  catch e
+    grunt.renameTask "s3", "__s3"
+    grunt.registerTask "s3", ->
+      grunt.fail.warn "Error reading 'aws.json' file: #{e}"
 
   #task groups
   grunt.registerTask "scripts-compile",      ["coffee"]
