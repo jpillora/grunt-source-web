@@ -29,7 +29,7 @@ module.exports = (grunt) ->
     #watcher
     watch:
       options:
-        livereload: true
+        livereload: grunt.option('livereload')
       scripts:
         files: 'src/scripts/**/*.coffee'
         tasks: 'scripts'
@@ -40,7 +40,7 @@ module.exports = (grunt) ->
         files: 'src/views/**/*.jade'
         tasks: 'views'
       styles:
-        files: 'src/styles/**/*.styl'
+        files: 'src/styles/**/*.{styl,css}'
         tasks: 'styles'
       config:
         files: ['Gruntsource.json']
@@ -73,22 +73,28 @@ module.exports = (grunt) ->
         src: output.js
         dest: output.js
     jade:
-      compile:
+      options:
+        pretty: dev
+        data:
+          JSON: JSON
+          showFile: gracefulRead
+          source: grunt.source
+          env: env
+          min: if env is 'prod' then '.min' else ''
+          dev: dev
+          date: new Date()
+          manifest: "<%= manifest.generate.dest %>"
+          css: -> "<style>#{gracefulRead(output.css)}</style>"
+          js: -> "<script>#{gracefulRead(output.js)}</script>"
+      index:
         src: "src/views/index.jade"
         dest: output.html
-        options:
-          pretty: dev
-          data:
-            JSON: JSON
-            showFile: gracefulRead
-            source: grunt.source
-            env: env
-            min: if env is 'prod' then '.min' else ''
-            dev: dev
-            date: new Date()
-            manifest: "<%= manifest.generate.dest %>"
-            css: -> "<style>#{gracefulRead(output.css)}</style>"
-            js: -> "<script>#{gracefulRead(output.js)}</script>"
+      templates:
+        expand: true
+        cwd: "src/views/templates/"
+        src: "**/*.jade"
+        dest: path.join path.dirname(output.html), 'templates'
+        ext: ".html"
     stylus:
       compile:
         src: "src/styles/app.styl"
@@ -135,6 +141,9 @@ module.exports = (grunt) ->
     grunt.registerTask "s3", ->
       grunt.fail.warn "Error reading 'aws.json' file: #{e}"
 
+  #conditional tasks
+  templates = grunt.file.isDir "src/templates"
+
   #task groups
   grunt.registerTask "scripts-compile",      ["coffee"]
   grunt.registerTask "scripts-pack", ["concat:scripts"].
@@ -142,6 +151,6 @@ module.exports = (grunt) ->
                                   concat(if dev then [] else ["uglify"])
   grunt.registerTask "scripts", ["scripts-compile","scripts-pack"]
   grunt.registerTask "styles",  ["stylus"].concat(if dev then [] else ["cssmin"])
-  grunt.registerTask "views",   ["jade"]
+  grunt.registerTask "views",   ["jade:index"].concat(if templates then ["jade:templates"] else [])
   grunt.registerTask "build",   ["scripts","styles","views"]
   grunt.registerTask "default", ["build","watch"]
