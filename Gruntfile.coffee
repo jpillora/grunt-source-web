@@ -35,7 +35,7 @@ module.exports = (grunt) ->
         tasks: 'scripts'
       vendor:
         files: 'src/scripts/vendor/**/*.js'
-        tasks: 'scripts-pack'
+        tasks: 'scripts'
       views:
         files: 'src/views/**/*.jade'
         tasks: 'views'
@@ -145,11 +145,9 @@ module.exports = (grunt) ->
   templates = grunt.file.isDir "src/templates"
 
   #task groups
-  grunt.registerTask "scripts-compile",      ["coffee"]
-  grunt.registerTask "scripts-pack", ["concat:scripts"].
+  grunt.registerTask "scripts", ["coffee", "concat:scripts"].
                                   concat(if not dev and grunt.source.angular then ["ngmin"] else []).
                                   concat(if dev then [] else ["uglify"])
-  grunt.registerTask "scripts", ["scripts-compile","scripts-pack"]
   grunt.registerTask "styles",  ["stylus"].concat(if dev then [] else ["cssmin"])
   grunt.registerTask "views",   ["jade:index"].concat(if templates then ["jade:templates"] else [])
   grunt.registerTask "build",   ["scripts","styles","views"]
