@@ -23,6 +23,8 @@ module.exports = (grunt) ->
   env = "dev" unless env in ["dev","prod"]
   dev = env is "dev"
 
+  port = grunt.option('server')
+
   #initialise config
   grunt.initConfig
 
@@ -45,6 +47,11 @@ module.exports = (grunt) ->
       config:
         files: ['Gruntsource.json']
         tasks: 'default'
+
+    connect:
+      server:
+        options:
+          port: if typeof port is 'number' then port else 3000
 
     #tasks
     coffee:
@@ -151,4 +158,6 @@ module.exports = (grunt) ->
   grunt.registerTask "styles",  ["stylus"].concat(if dev then [] else ["cssmin"])
   grunt.registerTask "views",   ["jade:index"].concat(if templates then ["jade:templates"] else [])
   grunt.registerTask "build",   ["scripts","styles","views"]
-  grunt.registerTask "default", ["build","watch"]
+  grunt.registerTask "default", ["build"].
+                                  concat(if port then ["connect"] else []).
+                                  concat("watch")
