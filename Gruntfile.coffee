@@ -24,6 +24,12 @@ module.exports = (grunt) ->
   dev = env is "dev"
 
   port = grunt.option('server')
+  livereload = grunt.option('livereload')
+
+  console.log grunt.option.flags()
+
+  if livereload
+    grunt.log.ok "LiveReload enabled"
 
   #initialise config
   grunt.initConfig
@@ -31,7 +37,7 @@ module.exports = (grunt) ->
     #watcher
     watch:
       options:
-        livereload: grunt.option('livereload')
+        livereload: livereload
       scripts:
         files: 'src/scripts/**/*.coffee'
         tasks: 'scripts'
@@ -71,6 +77,9 @@ module.exports = (grunt) ->
       scripts:
         src: ["src/scripts/vendor/*.js", output.js]
         dest: output.js
+      styles:
+        src: ["src/styles/vendor/*.css", output.css]
+        dest: output.css
     ngmin:
       app:
         src: output.js
@@ -155,8 +164,10 @@ module.exports = (grunt) ->
   grunt.registerTask "scripts", ["coffee", "concat:scripts"].
                                   concat(if not dev and grunt.source.angular then ["ngmin"] else []).
                                   concat(if dev then [] else ["uglify"])
-  grunt.registerTask "styles",  ["stylus"].concat(if dev then [] else ["cssmin"])
-  grunt.registerTask "views",   ["jade:index"].concat(if templates then ["jade:templates"] else [])
+  grunt.registerTask "styles",  ["stylus", "concat:styles"].
+                                  concat(if dev then [] else ["cssmin"])
+  grunt.registerTask "views",   ["jade:index"].
+                                  concat(if templates then ["jade:templates"] else [])
   grunt.registerTask "build",   ["scripts","styles","views"]
   grunt.registerTask "default", ["build"].
                                   concat(if port then ["connect"] else []).
