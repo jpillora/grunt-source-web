@@ -6,11 +6,6 @@ module.exports = (grunt) ->
   #load external tasks and change working directory
   grunt.source.loadAllTasks()
 
-  gracefulRead = (path) ->
-    try
-      return grunt.file.read path
-    return ""
-
   #output files
   output = grunt.source.output or {}
   grunt.util._.defaults output,
@@ -24,10 +19,10 @@ module.exports = (grunt) ->
   dev = env is "dev"
 
   port = grunt.option('server')
+  if port
+    grunt.log.ok "Static file server running on http://0.0.0.0:#{port}"
+
   livereload = grunt.option('livereload')
-
-  console.log grunt.option.flags()
-
   if livereload
     grunt.log.ok "LiveReload enabled"
 
@@ -57,6 +52,8 @@ module.exports = (grunt) ->
     connect:
       server:
         options:
+          base: path.dirname output.html
+          hostname: "0.0.0.0"
           port: if typeof port is 'number' then port else 3000
 
     #tasks
@@ -91,17 +88,8 @@ module.exports = (grunt) ->
     jade:
       options:
         pretty: dev
-        data:
-          JSON: JSON
-          showFile: gracefulRead
-          source: grunt.source
-          env: env
-          min: if env is 'prod' then '.min' else ''
-          dev: dev
-          date: new Date()
-          manifest: "<%= manifest.generate.dest %>"
-          css: -> "<style>#{gracefulRead(output.css)}</style>"
-          js: -> "<script>#{gracefulRead(output.js)}</script>"
+        doctype: "5"
+        data: require("./helper/jade-data")(grunt,env)
       index:
         src: "src/views/index.jade"
         dest: output.html
