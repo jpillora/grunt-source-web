@@ -19,8 +19,10 @@ module.exports = (grunt) ->
   dev = env is "dev"
 
   port = grunt.option('server')
+
   if port
-    grunt.log.ok "Static file server running on http://0.0.0.0:#{port}"
+    port = 3000 unless typeof port is 'number'
+    grunt.log.ok "Static file server enabled (http://0.0.0.0:#{port})"
 
   livereload = grunt.option('livereload')
   if livereload
@@ -53,8 +55,9 @@ module.exports = (grunt) ->
       server:
         options:
           base: path.dirname output.html
+          directory: path.dirname output.html
           hostname: "0.0.0.0"
-          port: if typeof port is 'number' then port else 3000
+          port: port
 
     #tasks
     coffee:
