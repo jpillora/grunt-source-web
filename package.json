@@ -1,6 +1,6 @@
 {
   "name": "grunt-source-web",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jpillora/grunt-source-web"
@@ -9,21 +9,21 @@
   "license": "MIT",
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-contrib-stylus": "~0.5.0",
-    "grunt-contrib-coffee": "~0.7.0",
-    "grunt-contrib-jade": "~0.7.0",
-    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-stylus": "~0.13.2",
+    "grunt-contrib-coffee": "~0.10.1",
+    "grunt-contrib-jade": "~0.11.0",
+    "grunt-contrib-uglify": "~0.4.0",
     "grunt-contrib-cssmin": "~0.6.1",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-ngmin": "0.0.2",
     "grunt-manifest": "~0.4.0",
-    "mkdirp": "~0.3.5",
     "load-grunt-tasks": "~0.1.0",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-watch": "~0.5.2",
     "grunt-aws": "~0.2.4",
     "grunt-contrib-connect": "~0.5.0",
     "highlight.js": "~7.3.0",
-    "marked": "~0.2.9"
+    "marked": "~0.2.9",
+    "grunt-contrib-htmlmin": "^0.2.0"
   }
 }

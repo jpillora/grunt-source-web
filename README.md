@@ -7,7 +7,7 @@ utilizing [Grunt Source](https://github.com/jpillora/grunt-source).
 ## Features
 
 * Development and Production builds with `--env dev|prod`
-* Compile your CoffeeScript, Jade and Stylus
+* Compile your [Java|Coffee]Script, Jade and Stylus
 * Watch source each directory and compile only what is required
 * Add a `config` object to have it merged into the grunt config
 * Grunt source config available as the `source` variable in Jade and Stylus files
@@ -31,8 +31,8 @@ utilizing [Grunt Source](https://github.com/jpillora/grunt-source).
 
   ``` sh
   src/
-      scripts/index.coffee
-      styles/index.styl
+      scripts/app.coffee
+      styles/app.styl
       views/index.jade
   ```
 
@@ -47,15 +47,23 @@ utilizing [Grunt Source](https://github.com/jpillora/grunt-source).
 
 * And we're ready to host on Github Pages
 
-## Options
+## Grunt Options
 
-#### `--env`
+#### `--env=<env>`
 
 Can be `prod` or `dev` (defaults to `dev`).
 
 `prod` will minify all JS, CSS, HTML
 
 `dev` will leave the JS intact, create annotated CSS, prettify your HTML
+
+#### `--server=<port>`
+
+#### `--livereload=true`
+
+## Grunt Source Config
+
+* `angular` when `true`, will run `ng-min` before `uglify`
 
 ## Tasks
 

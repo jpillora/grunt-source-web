@@ -18,12 +18,13 @@ module.exports = (grunt) ->
   env = "dev" unless env in ["dev","prod"]
   dev = env is "dev"
 
+  #port settings
   port = grunt.option('server')
-
   if port
     port = 3000 unless typeof port is 'number'
     grunt.log.ok "Static file server enabled (http://0.0.0.0:#{port})"
 
+  #
   livereload = grunt.option('livereload')
   if livereload
     grunt.log.ok "LiveReload enabled"
@@ -75,7 +76,15 @@ module.exports = (grunt) ->
           join: true
     concat:
       scripts:
-        src: ["src/scripts/vendor/*.js", output.js]
+        src: [
+          "src/scripts/vendor/*.js",
+          "src/scripts/init.js",
+          "src/scripts/**/*.js",
+          #remove and re-add to insert at bottom
+          "!src/scripts/run.js",
+          "src/scripts/run.js",
+          output.js
+        ]
         dest: output.js
       styles:
         src: ["src/styles/vendor/*.css", output.css]
@@ -110,14 +119,21 @@ module.exports = (grunt) ->
           urlfunc: 'embedurl'
           define:
             source: grunt.source
+          # use: nib
           compress: not dev
           linenos: dev
           'include css': true
           paths: ["src/styles/embed/","../"]
+
     cssmin:
       compress:
         src: output.css
         dest: output.css
+
+    htmlmin:
+      compress:
+        src: output.html
+        dest: output.html
 
     #appcache
     manifest:
@@ -152,14 +168,37 @@ module.exports = (grunt) ->
   templates = grunt.file.isDir "src/templates"
 
   #task groups
-  grunt.registerTask "scripts", ["coffee", "concat:scripts"].
-                                  concat(if not dev and grunt.source.angular then ["ngmin"] else []).
-                                  concat(if dev then [] else ["uglify"])
-  grunt.registerTask "styles",  ["stylus", "concat:styles"].
-                                  concat(if dev then [] else ["cssmin"])
-  grunt.registerTask "views",   ["jade:index"].
-                                  concat(if templates then ["jade:templates"] else [])
-  grunt.registerTask "build",   ["scripts","styles","views"]
-  grunt.registerTask "default", ["build"].
-                                  concat(if port then ["connect"] else []).
-                                  concat("watch")
+  scripts = [
+    "coffee"
+    "concat:scripts"
+  ]
+  scripts.push "ngmin" if grunt.source.angular and not dev
+  scripts.push "uglify" unless dev
+  grunt.registerTask "scripts", scripts
+
+  styles = [
+    "stylus"
+    "concat:styles"
+  ]
+  styles.push "cssmin" unless dev
+  grunt.registerTask "styles", styles
+
+  views = [
+    "jade:index"
+  ]
+  views.push "jade:templates" if templates
+  views.push "htmlmin" unless dev
+  grunt.registerTask "views", views
+
+  grunt.registerTask "build", [
+    "scripts"
+    "styles"
+    "views"
+  ]
+
+  def = []
+  def.push "init" unless grunt.file.exists "src/styles/app.styl"
+  def.push "build"
+  def.push "connect" if port
+  def.push "watch"
+  grunt.registerTask "default", def
