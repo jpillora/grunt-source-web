@@ -10,7 +10,10 @@ marked.setOptions gfm:true
 module.exports = (grunt, env) ->
 
   read = (path) ->
-    try return grunt.file.read path
+    try
+      return grunt.file.read path
+    catch err
+      console.warn "grunt-source-web: failed to read: '#{path}'"
     return ""
 
   #include directory helper
@@ -60,7 +63,7 @@ module.exports = (grunt, env) ->
       html = hljs.highlight(lang, str).value
       "<pre><code>#{html}</code></pre>"
     showFile: (file) ->
-      read path.join "..", file
+      read file
     source: grunt.source
     env: env
     min: if env is 'prod' then '.min' else ''

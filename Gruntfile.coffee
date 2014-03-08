@@ -173,21 +173,21 @@ module.exports = (grunt) ->
     "concat:scripts"
   ]
   scripts.push "ngmin" if grunt.source.angular and not dev
-  scripts.push "uglify" unless dev
+  scripts.push "uglify" if not dev and grunt.source.uglify isnt false
   grunt.registerTask "scripts", scripts
 
   styles = [
     "stylus"
     "concat:styles"
   ]
-  styles.push "cssmin" unless dev
+  styles.push "cssmin" if not dev and grunt.source.cssmin isnt false
   grunt.registerTask "styles", styles
 
   views = [
     "jade:index"
   ]
   views.push "jade:templates" if templates
-  views.push "htmlmin" unless dev
+  views.push "htmlmin" if not dev and grunt.source.htmlmin isnt false
   grunt.registerTask "views", views
 
   grunt.registerTask "build", [
