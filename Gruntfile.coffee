@@ -151,18 +151,22 @@ module.exports = (grunt) ->
           output.js
         ]
         dest: 'appcache'
+    #copy 
+    s3: grunt.source.s3
+
 
   #external aws credentials
-  try
-    aws = grunt.file.readJSON "./aws.json"
-    throw "Missing 'accessKeyId'" unless aws.accessKeyId
-    grunt.config 's3.options.accessKeyId', aws.accessKeyId
-    throw "Missing 'secretAccessKey'" unless aws.secretAccessKey
-    grunt.config 's3.options.secretAccessKey', aws.secretAccessKey
-  catch e
-    grunt.renameTask "s3", "__s3"
-    grunt.registerTask "s3", ->
-      grunt.fail.warn "Error reading 'aws.json' file: #{e}"
+  unless grunt.config('s3.options.accessKeyId') and grunt.config('s3.options.secretAccessKey')
+    try
+      aws = grunt.file.readJSON "./aws.json"
+      throw "Missing 'accessKeyId'" unless aws.accessKeyId
+      grunt.config 's3.options.accessKeyId', aws.accessKeyId
+      throw "Missing 'secretAccessKey'" unless aws.secretAccessKey
+      grunt.config 's3.options.secretAccessKey', aws.secretAccessKey
+    catch e
+      grunt.renameTask "s3", "__s3"
+      grunt.registerTask "s3", ->
+        grunt.fail.warn "Error reading 'aws.json' file: #{e}"
 
   #conditional tasks
   templates = grunt.file.isDir "src/templates"
