@@ -168,6 +168,11 @@ module.exports = (grunt) ->
       grunt.registerTask "s3", ->
         grunt.fail.warn "Error reading 'aws.json' file: #{e}"
 
+  #extra watch dirs
+  if grunt.source.watch
+    grunt.log.ok "Watching external files %j", grunt.source.watch
+    grunt.config "watch.user", {files:grunt.source.watch, tasks:[]}
+
   #conditional tasks
   templates = grunt.file.isDir "src/templates"
 
